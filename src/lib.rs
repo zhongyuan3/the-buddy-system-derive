@@ -7,19 +7,22 @@
 //! [`PageFrame`] implementor, e.g. `struct Addr(u64)`. All address
 //! arithmetic is delegated to the inner type, so the overflow-safety and
 //! panicking guarantees of `PhysAddr` and `PageFrame` are preserved.
+//! The derive covers the physical-address ↔ PFN conversions
+//! (`phys_to_pfn`, `pfn_to_phys`, `pfn_ceil`) and the `usize` index
+//! conversions.
 //!
 //! Because [`PageFrame`] requires [`PhysAddr`] as a supertrait, the derive
-//! implements the memblock trait as well, together with the supertraits
-//! both traits require: `Clone`, `Copy`, `PartialEq`, `Eq`, `PartialOrd`,
-//! `Ord`, `Debug`, `Add` and `Sub`. Do **not** also derive
-//! `the_memblock::PhysAddr` for the same type; the implementations would
-//! conflict.
+//! implements the shared `the_mm_core::PhysAddr` trait as well, together
+//! with the supertraits both traits require: `Clone`, `Copy`, `PartialEq`,
+//! `Eq`, `PartialOrd`, `Ord`, `Debug`, `Add` and `Sub`. Do **not** also
+//! derive `the_memblock::PhysAddr` for the same type; the implementations
+//! would conflict.
 //!
 //! Only concrete, non-generic tuple structs with exactly one field are
 //! supported; the field must already implement [`PageFrame`] (all unsigned
 //! primitives do).
 //!
-//! [`PhysAddr`]: https://docs.rs/the-memblock/latest/the_memblock/addr/trait.PhysAddr.html
+//! [`PhysAddr`]: https://docs.rs/the-mm-core/latest/the_mm_core/trait.PhysAddr.html
 //!
 //! # no_std note
 //!
@@ -170,18 +173,6 @@ fn expand(input: &DeriveInput) -> syn::Result<TokenStream2> {
             fn align_down(addr: Self, alignment: Self) -> Self {
                 #name(<#inner as #phys>::align_down(addr.0, alignment.0))
             }
-
-            fn pfn_up(addr: Self, page_size: Self) -> Self {
-                #name(<#inner as #phys>::pfn_up(addr.0, page_size.0))
-            }
-
-            fn pfn_down(addr: Self, page_size: Self) -> Self {
-                #name(<#inner as #phys>::pfn_down(addr.0, page_size.0))
-            }
-
-            fn pfn_to_phys(pfn: Self, page_size: Self) -> Self {
-                #name(<#inner as #phys>::pfn_to_phys(pfn.0, page_size.0))
-            }
         }
 
         impl #page_frame for #name {
@@ -191,6 +182,18 @@ fn expand(input: &DeriveInput) -> syn::Result<TokenStream2> {
 
             fn from_usize(index: usize) -> Self {
                 #name(<#inner as #page_frame>::from_usize(index))
+            }
+
+            fn phys_to_pfn(addr: Self, page_size: Self) -> Self {
+                #name(<#inner as #page_frame>::phys_to_pfn(addr.0, page_size.0))
+            }
+
+            fn pfn_to_phys(pfn: Self, page_size: Self) -> Self {
+                #name(<#inner as #page_frame>::pfn_to_phys(pfn.0, page_size.0))
+            }
+
+            fn pfn_ceil(addr: Self, page_size: Self) -> Self {
+                #name(<#inner as #page_frame>::pfn_ceil(addr.0, page_size.0))
             }
         }
     })
