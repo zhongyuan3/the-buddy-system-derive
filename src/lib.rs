@@ -47,7 +47,7 @@ use syn::{Data, DeriveInput, Fields, Ident, Type, parse_macro_input};
 /// single-field tuple struct, delegating every method to the inner field.
 ///
 /// [`PageFrame`]: https://docs.rs/the-buddy-system/latest/the_buddy_system/pfn/trait.PageFrame.html
-/// [`PhysAddr`]: https://docs.rs/the-memblock/latest/the_memblock/addr/trait.PhysAddr.html
+/// [`PhysAddr`]: https://docs.rs/the-memblock/latest/the_memblock/trait.PhysAddr.html
 #[proc_macro_derive(PageFrame)]
 pub fn derive_page_frame(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
