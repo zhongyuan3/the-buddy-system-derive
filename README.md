@@ -39,7 +39,7 @@ implements the memblock trait as well: do not also derive
 `the_memblock::PhysAddr` for the same type, the implementations would
 conflict.
 
-[`PageFrame`]: https://docs.rs/the-buddy-system/latest/the_buddy_system/pfn/trait.PageFrame.html
+[`PageFrame`]: https://docs.rs/the-mm-core/latest/the_mm_core/trait.PageFrame.html
 [the-buddy-system]: https://crates.io/crates/the-buddy-system
 
 ## License

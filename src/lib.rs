@@ -1,6 +1,6 @@
 //! Derive macro for the [`PageFrame`] trait.
 //!
-//! [`PageFrame`]: https://docs.rs/the-buddy-system/latest/the_buddy_system/pfn/trait.PageFrame.html
+//! [`PageFrame`]: https://docs.rs/the-mm-core/latest/the_mm_core/trait.PageFrame.html
 //!
 //! [`#[derive(PageFrame)]`](derive@PageFrame) generates a transparent
 //! implementation for a single-field tuple struct wrapping another
@@ -46,7 +46,7 @@ use syn::{Data, DeriveInput, Fields, Ident, Type, parse_macro_input};
 /// Derives [`PageFrame`] and the [`PhysAddr`] supertrait for a
 /// single-field tuple struct, delegating every method to the inner field.
 ///
-/// [`PageFrame`]: https://docs.rs/the-buddy-system/latest/the_buddy_system/pfn/trait.PageFrame.html
+/// [`PageFrame`]: https://docs.rs/the-mm-core/latest/the_mm_core/trait.PageFrame.html
 /// [`PhysAddr`]: https://docs.rs/the-memblock/latest/the_memblock/trait.PhysAddr.html
 #[proc_macro_derive(PageFrame)]
 pub fn derive_page_frame(input: TokenStream) -> TokenStream {
