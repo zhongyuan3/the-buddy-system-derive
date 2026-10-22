@@ -4,11 +4,12 @@ Derive macro for the [`PageFrame`] trait from [the-buddy-system].
 
 `#[derive(PageFrame)]` implements `PageFrame`, its memblock `PhysAddr`
 supertrait and every supertrait they require (`Clone`, `Copy`,
-`PartialEq`, `Eq`, `PartialOrd`, `Ord`, `Debug`, `Add`, `Sub`) for a
+`PartialEq`, `Eq`, `PartialOrd`, `Ord`, `Add`, `Sub`) for a
 single-field tuple struct wrapping another `PageFrame` implementor. All
 address arithmetic and index conversions are delegated to the inner type,
 so the overflow-safety and panicking guarantees of the traits are
-preserved.
+preserved. `Debug` is not generated; add it to the derive list if you need
+to format the address type.
 
 ```rust
 use the_buddy_system::Buddy;

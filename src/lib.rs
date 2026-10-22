@@ -14,9 +14,10 @@
 //! Because [`PageFrame`] requires [`PhysAddr`] as a supertrait, the derive
 //! implements the shared `the_mm_core::PhysAddr` trait as well, together
 //! with the supertraits both traits require: `Clone`, `Copy`, `PartialEq`,
-//! `Eq`, `PartialOrd`, `Ord`, `Debug`, `Add` and `Sub`. Do **not** also
+//! `Eq`, `PartialOrd`, `Ord`, `Add` and `Sub`. Do **not** also
 //! derive `the_memblock::PhysAddr` for the same type; the implementations
-//! would conflict.
+//! would conflict. `Debug` is not generated; add it to the derive list if
+//! you need to format the address type.
 //!
 //! Only concrete, non-generic tuple structs with exactly one field are
 //! supported; the field must already implement [`PageFrame`] (all unsigned
@@ -36,7 +37,6 @@
 extern crate alloc;
 
 use alloc::format;
-use alloc::string::ToString;
 use proc_macro::TokenStream;
 use proc_macro_crate::{FoundCrate, crate_name};
 use proc_macro2::TokenStream as TokenStream2;
@@ -111,7 +111,6 @@ fn expand(input: &DeriveInput) -> syn::Result<TokenStream2> {
     let path = crate_path();
     let phys = quote!(#path::PhysAddr);
     let page_frame = quote!(#path::PageFrame);
-    let debug_name = name.to_string();
 
     Ok(quote! {
         impl Clone for #name {
@@ -139,12 +138,6 @@ fn expand(input: &DeriveInput) -> syn::Result<TokenStream2> {
         impl Ord for #name {
             fn cmp(&self, other: &Self) -> ::core::cmp::Ordering {
                 ::core::cmp::Ord::cmp(&self.0, &other.0)
-            }
-        }
-
-        impl ::core::fmt::Debug for #name {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                f.debug_tuple(#debug_name).field(&self.0).finish()
             }
         }
 
